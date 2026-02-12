@@ -18,9 +18,7 @@ const fetchAddress = async (lat, lng) => {
   const response = await fetch(
     `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${API_KEY}`,
   );
-  if (!response.ok) {
-    throw new Error("Falha ao buscar endereço");
-  }
+
   const data = await response.json();
   return data.results[0]?.formatted_address || "Endereço desconhecido";
 };
@@ -54,7 +52,6 @@ function MapController({ place }) {
   return null;
 }
 
-// --- COMPONENTE PRINCIPAL ---
 export function Map({ selectedLocation }) {
   const { favorites, addFavorite } = useStore();
   const [clickedPos, setClickedPos] = useState(null);
@@ -121,9 +118,9 @@ export function Map({ selectedLocation }) {
               title={fav.name}
             >
               <Pin
-                background={"#2563eb"}
+                background={"#FF3838"}
                 glyphColor={"white"}
-                borderColor={"#1e40af"}
+                borderColor={"#FF3838"}
               />
             </AdvancedMarker>
           ))}
