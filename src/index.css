@@ -1,3 +1,5 @@
+@config "../tailwind.config.js";
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,4 +13,16 @@ body,
   margin: 0;
   padding: 0;
   overflow: hidden;
+}
+
+@layer base {
+  body {
+    /* Aplica a fonte Inter, cor do texto primária e fundo suave */
+    @apply font-sans text-text-primary bg-ui-background antialiased;
+  }
+
+  /* Aplica a fonte Outfit em todos os títulos */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading font-bold text-primary;
+  }
 }
