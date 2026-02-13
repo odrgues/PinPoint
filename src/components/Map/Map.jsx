@@ -1,4 +1,4 @@
-import { Sidebar } from "../Sidebar";
+import { Sidebar } from "../Sidebar/Sidebar";
 
 import { useMemo, useState } from "react";
 import { InfoWindow } from "@vis.gl/react-google-maps";

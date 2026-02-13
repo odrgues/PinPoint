@@ -1,5 +1,5 @@
 import { APIProvider } from "@vis.gl/react-google-maps";
-import { Map } from "./components/Map/Map";
+import Map from "./components/Map/Map";
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 
