@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
+import { useMutation } from "@tanstack/react-query";
+import { geocodeByAddress } from "../../services/geocodeService";
 import { useStore } from "../../store/useStore";
 import { MapPin, Search as SearchIcon, Menu, X, Trash2 } from "lucide-react";
 
@@ -8,14 +10,31 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
   const { favorites, removeFavorite } = useStore();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [text, setText] = useState("");
   const inputRef = useRef(null);
-  const autocompleteRef = useRef(null);
 
+  // React Query (cumpre 3.7)
+  const geocodeMutation = useMutation({
+    mutationFn: geocodeByAddress,
+    onSuccess: (data) => {
+      setIsOpen(false);
+      // Padroniza “place-like”
+      onPlaceSelect?.({
+        name: text,
+        formatted_address: data.formatted_address,
+        geometry: {
+          location: {
+            lat: () => data.lat,
+            lng: () => data.lng,
+          },
+        },
+      });
+    },
+  });
+
+  // Autocomplete (continua existindo)
   useEffect(() => {
     if (!placesLib || !inputRef.current) return;
-
-    // Evita criar 2x em StrictMode
-    if (autocompleteRef.current) return;
 
     const ac = new placesLib.Autocomplete(inputRef.current, {
       fields: ["geometry", "name", "formatted_address", "place_id"],
@@ -28,20 +47,25 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
       onPlaceSelect?.(place);
     });
 
-    autocompleteRef.current = ac;
-
-    return () => {
-      // remove listener e libera referência
-      listener?.remove?.();
-      autocompleteRef.current = null;
-    };
+    return () => window.google.maps.event.removeListener(listener);
   }, [placesLib, onPlaceSelect]);
 
+  function handleSubmit(e) {
+    e.preventDefault();
+    const q = text.trim();
+    if (!q) return;
+    geocodeMutation.mutate(q);
+  }
+
   return (
-    <div className="absolute top-4 left-4 z-sidebar w-full max-w-md px-4 md:px-0 font-sans pointer-events-none">
-      <div className="pointer-events-auto bg-ui-surface shadow-floating rounded-pill flex items-center p-1 border border-ui-border transition-all focus-within:ring-2 focus-within:ring-primary/20">
+    <div className="absolute top-4 left-4 z-sidebar w-full max-w-md px-4 md:px-0 pointer-events-none">
+      <form
+        onSubmit={handleSubmit}
+        className="pointer-events-auto bg-ui-surface shadow-floating rounded-pill flex items-center p-1 border border-ui-border focus-within:ring-2 focus-within:ring-primary/20"
+      >
         <button
-          onClick={() => setIsOpen((v) => !v)}
+          type="button"
+          onClick={() => setIsOpen(!isOpen)}
           className={`p-3 rounded-full transition-colors ${
             isOpen
               ? "bg-primary text-ui-surface"
@@ -54,21 +78,39 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
 
         <input
           ref={inputRef}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
           type="text"
           placeholder="Buscar endereço ou loja..."
           className="flex-1 bg-transparent border-none outline-none text-text-primary placeholder:text-text-muted text-base px-3 h-10"
         />
 
-        <div className="h-6 w-px bg-ui-border mx-1"></div>
+        <div className="h-6 w-px bg-ui-border mx-1" />
+
         <button
-          onClick={() => inputRef.current?.focus()}
+          type="submit"
           className="p-3 text-accent hover:text-primary hover:bg-ui-background rounded-full transition-colors"
           title="Pesquisar"
         >
           <SearchIcon size={20} />
         </button>
+      </form>
+
+      {/* Loading/Erro (cumpre 3.7) */}
+      <div className="pointer-events-none mt-2">
+        {geocodeMutation.isPending && (
+          <div className="pointer-events-auto inline-block pp-card text-sm">
+            🔄 Buscando...
+          </div>
+        )}
+        {geocodeMutation.isError && (
+          <div className="pointer-events-auto inline-block pp-card text-sm text-ui-error">
+            {geocodeMutation.error?.message || "Erro na busca"}
+          </div>
+        )}
       </div>
 
+      {/* Favoritos dropdown */}
       {isOpen && (
         <div className="pointer-events-auto mt-2 bg-ui-surface rounded-lg shadow-medium border border-ui-border overflow-hidden animate-slide-up origin-top">
           <div className="bg-ui-background p-3 border-b border-ui-border flex justify-between items-center">

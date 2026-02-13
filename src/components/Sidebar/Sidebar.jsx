@@ -1,4 +1,4 @@
-import { FavoritesList } from "./FavoritesList";
+import { FavoritesList } from "./FavoriteList";
 
 export function Sidebar({ favorites, onSelectFavorite, onRemoveFavorite }) {
   return (
