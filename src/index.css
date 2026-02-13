@@ -1,9 +1,6 @@
-@config "../tailwind.config.js";
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 
 html,
 body,
@@ -17,12 +14,32 @@ body,
 
 @layer base {
   body {
-    /* Aplica a fonte Inter, cor do texto primária e fundo suave */
     @apply font-sans text-text-primary bg-ui-background antialiased;
   }
 
-  /* Aplica a fonte Outfit em todos os títulos */
   h1, h2, h3, h4, h5, h6 {
     @apply font-heading font-bold text-primary;
+  }
+}
+
+@layer components {
+  .pp-card {
+    @apply bg-ui-surface rounded-lg shadow-medium border border-ui-border p-3;
+  }
+
+  .pp-title {
+    @apply font-heading font-bold text-primary;
+  }
+
+  .pp-muted {
+    @apply text-text-muted;
+  }
+
+  .pp-btn {
+    @apply bg-accent text-text-inverted px-3 py-2 rounded-pill font-bold hover:opacity-90 transition;
+  }
+
+  .pp-input {
+    @apply border border-ui-border bg-ui-surface rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-accent/40;
   }
 }

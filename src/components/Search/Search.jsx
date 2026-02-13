@@ -1,69 +1,47 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useMapsLibrary, useMap } from "@vis.gl/react-google-maps";
-import { useStore } from "../../store/useStore"; // Ajuste o caminho conforme necessário
+import { useEffect, useRef, useState } from "react";
+import { useMapsLibrary } from "@vis.gl/react-google-maps";
+import { useStore } from "../../store/useStore";
 import { MapPin, Search as SearchIcon, Menu, X, Trash2 } from "lucide-react";
 
 export function Search({ onPlaceSelect, onLocationSelect }) {
-  // Removi onSearch pois o Autocomplete assume
-  const map = useMap();
   const placesLib = useMapsLibrary("places");
   const { favorites, removeFavorite } = useStore();
 
-  // Estados
   const [isOpen, setIsOpen] = useState(false);
-  const [autocomplete, setAutocomplete] = useState(null);
-
-  // Ref para o input
   const inputRef = useRef(null);
+  const autocompleteRef = useRef(null);
 
-  // --- 1. CONFIGURAÇÃO DO GOOGLE AUTOCOMPLETE ---
   useEffect(() => {
     if (!placesLib || !inputRef.current) return;
 
-    const newAutocomplete = new placesLib.Autocomplete(inputRef.current, {
-      fields: ["geometry", "name", "formatted_address"],
+    // Evita criar 2x em StrictMode
+    if (autocompleteRef.current) return;
+
+    const ac = new placesLib.Autocomplete(inputRef.current, {
+      fields: ["geometry", "name", "formatted_address", "place_id"],
     });
 
-    setAutocomplete(newAutocomplete);
-  }, [placesLib]);
-
-  // --- 2. GERENCIAMENTO DE SELEÇÃO DE LUGAR ---
-  useEffect(() => {
-    if (!autocomplete || !map) return;
-
-    const listener = autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-
-      if (!place.geometry || !place.geometry.location) return;
-
-      // Lógica de Zoom/Pan do Google
-      if (place.geometry.viewport) {
-        map.fitBounds(place.geometry.viewport);
-      } else {
-        const center = place.geometry.location;
-        map.setCenter(center);
-        map.setZoom(16); // Zoom mais próximo para ponto exato
-      }
-
-      // Fecha o menu se estiver aberto
+    const listener = ac.addListener("place_changed", () => {
+      const place = ac.getPlace();
+      if (!place?.geometry?.location) return;
       setIsOpen(false);
-
-      if (onPlaceSelect) {
-        onPlaceSelect(place);
-      }
+      onPlaceSelect?.(place);
     });
 
-    return () => window.google.maps.event.removeListener(listener);
-  }, [autocomplete, map, onPlaceSelect]);
+    autocompleteRef.current = ac;
+
+    return () => {
+      // remove listener e libera referência
+      listener?.remove?.();
+      autocompleteRef.current = null;
+    };
+  }, [placesLib, onPlaceSelect]);
 
   return (
-    // CONTAINER FLUTUANTE (Posicionado sobre o mapa)
     <div className="absolute top-4 left-4 z-sidebar w-full max-w-md px-4 md:px-0 font-sans pointer-events-none">
-      {/* BARRA VISUAL (Finge ser o Input) */}
       <div className="pointer-events-auto bg-ui-surface shadow-floating rounded-pill flex items-center p-1 border border-ui-border transition-all focus-within:ring-2 focus-within:ring-primary/20">
-        {/* BOTÃO HAMBÚRGUER (Esquerda) */}
         <button
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => setIsOpen((v) => !v)}
           className={`p-3 rounded-full transition-colors ${
             isOpen
               ? "bg-primary text-ui-surface"
@@ -74,7 +52,6 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
           {isOpen ? <X size={24} /> : <Menu size={24} />}
         </button>
 
-        {/* INPUT REAL (Transparente e sem bordas) */}
         <input
           ref={inputRef}
           type="text"
@@ -82,7 +59,6 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
           className="flex-1 bg-transparent border-none outline-none text-text-primary placeholder:text-text-muted text-base px-3 h-10"
         />
 
-        {/* BOTÃO LUPA (Direita - Decorativo ou Foco) */}
         <div className="h-6 w-px bg-ui-border mx-1"></div>
         <button
           onClick={() => inputRef.current?.focus()}
@@ -93,10 +69,8 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
         </button>
       </div>
 
-      {/* LISTA DE FAVORITOS (Dropdown) */}
       {isOpen && (
         <div className="pointer-events-auto mt-2 bg-ui-surface rounded-lg shadow-medium border border-ui-border overflow-hidden animate-slide-up origin-top">
-          {/* Cabeçalho da Lista */}
           <div className="bg-ui-background p-3 border-b border-ui-border flex justify-between items-center">
             <span className="font-heading font-bold text-primary text-sm uppercase tracking-wide">
               Locais Salvos
@@ -106,7 +80,6 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
             </span>
           </div>
 
-          {/* Lista com Scroll */}
           <div className="max-h-[60vh] overflow-y-auto p-2 space-y-1">
             {favorites.length === 0 ? (
               <div className="text-center py-6 text-text-muted">
@@ -118,10 +91,7 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
                 <div
                   key={fav.id}
                   onClick={() => {
-                    // Move o mapa para o favorito salvo
-                    map.panTo({ lat: fav.lat, lng: fav.lng });
-                    map.setZoom(16);
-                    if (onLocationSelect) onLocationSelect(fav);
+                    onLocationSelect?.(fav);
                     setIsOpen(false);
                   }}
                   className="group flex items-center justify-between p-3 rounded-md hover:bg-ui-background cursor-pointer transition-colors"
