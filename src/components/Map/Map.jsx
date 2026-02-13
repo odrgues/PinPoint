@@ -1,181 +1,250 @@
-import { useState, useEffect } from "react";
-import {
-  APIProvider,
-  Map as GoogleMap,
-  AdvancedMarker,
-  Pin,
-  InfoWindow,
-  useMap,
-} from "@vis.gl/react-google-maps";
+import { Sidebar } from "../Sidebar";
+
+import { useMemo, useState } from "react";
+import { InfoWindow } from "@vis.gl/react-google-maps";
 import { useQuery } from "@tanstack/react-query";
+
 import { useStore } from "../../store/useStore";
+import { reverseGeocode } from "../../services/googleMapsService";
+
+import { MapView } from "./MapView";
+import { MapController } from "./MapController";
+import { FavoriteMarkers } from "./FavoriteMarkers";
+import { ClickMarker } from "./ClickHandler";
+import { LocationInfoWindow } from "./LocationInfoWindow";
+import { PlaceDetailsController } from "./PlaceDetailsController";
+
 import { Search } from "../Search/Search";
 
-const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY;
 const UBERLANDIA_COORDS = { lat: -18.9113, lng: -48.2622 };
 
-const fetchAddress = async (lat, lng) => {
-  const response = await fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${API_KEY}`,
-  );
+// Garante {lat:number,lng:number} independentemente do tipo (Google LatLng ou objeto normal)
+function normalizeLatLng(latLng) {
+  if (!latLng) return null;
 
-  const data = await response.json();
-  return data.results[0]?.formatted_address || "Endereço desconhecido";
-};
+  const lat = typeof latLng.lat === "function" ? latLng.lat() : latLng.lat;
+  const lng = typeof latLng.lng === "function" ? latLng.lng() : latLng.lng;
 
-function MapController({ place }) {
-  const map = useMap();
-
-  useEffect(() => {
-    if (!map || !place) return;
-
-    const targetPos = { lat: Number(place.lat), lng: Number(place.lng) };
-    const targetZoom = 16;
-    const startingZoom = map.getZoom();
-
-    map.panTo(targetPos);
-
-    if (startingZoom < 14) {
-      setTimeout(() => {
-        map.setZoom(14);
-        setTimeout(() => {
-          map.setZoom(targetZoom);
-        }, 300);
-      }, 300);
-    } else {
-      setTimeout(() => {
-        map.setZoom(targetZoom);
-      }, 500);
-    }
-  }, [map, place]);
-
-  return null;
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+  return { lat, lng };
 }
 
-export function Map({ selectedLocation }) {
-  const { favorites, addFavorite } = useStore();
+export default function Map() {
+  const { favorites, addFavorite, removeFavorite } = useStore();
+
   const [clickedPos, setClickedPos] = useState(null);
   const [nameInput, setNameInput] = useState("");
 
-  const {
-    data: address,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["address", clickedPos?.lat, clickedPos?.lng],
-    queryFn: () => fetchAddress(clickedPos.lat, clickedPos.lng),
+  const [selectedLocation, setSelectedLocation] = useState(null); // usado pelo MapController (pan/zoom)
+  const [activeFavorite, setActiveFavorite] = useState(null);
+
+  const [selectedPlaceId, setSelectedPlaceId] = useState(null);
+  const [selectedPlace, setSelectedPlace] = useState(null);
+
+  // Reverse geocode (Google) quando clicar em um ponto do mapa
+  const reverseQuery = useQuery({
+    queryKey: ["reverseGeocode", clickedPos?.lat, clickedPos?.lng],
+    queryFn: async () => {
+      const res = await reverseGeocode(clickedPos);
+      return res?.formatted_address || "Endereço desconhecido";
+    },
     enabled: !!clickedPos,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60 * 10,
   });
 
+  const address = reverseQuery.data;
+  const isLoading = reverseQuery.isLoading;
+  const isError = reverseQuery.isError;
+
+  function resetOverlays() {
+    setSelectedPlaceId(null);
+    setSelectedPlace(null);
+    setActiveFavorite(null);
+  }
+
   function onMapClick(ev) {
-    setClickedPos(ev.detail.latLng);
+    // Clique em POI/estabelecimento (ícone do mapa)
+    const placeId = ev.detail.placeId?.placeId || ev.detail.placeId;
+    if (placeId) {
+      setSelectedPlaceId(placeId);
+      setSelectedPlace(null);
+
+      setClickedPos(null);
+      setNameInput("");
+      setActiveFavorite(null);
+      return;
+    }
+
+    // Clique normal no mapa
+    const pos = normalizeLatLng(ev.detail.latLng);
+    if (!pos) return;
+
+    setClickedPos(pos);
+    setSelectedLocation(pos); // centraliza no ponto clicado
+    setNameInput("");
+    resetOverlays();
+  }
+
+  // Seleção via autocomplete (busca)
+  function handlePlaceSelect(place) {
+    if (!place?.geometry?.location) return;
+
+    const lat = place.geometry.location.lat();
+    const lng = place.geometry.location.lng();
+    const pos = { lat, lng };
+
+    setSelectedLocation(pos); // centraliza
+    setClickedPos(pos); // abre a janela de salvar
+    setNameInput(place.name || "");
+    resetOverlays();
+  }
+
+  // Clique em favorito (lista ou marcador)
+  function handleFavoriteSelect(fav) {
+    const pos = { lat: fav.lat, lng: fav.lng };
+
+    setSelectedLocation(pos); // centraliza
+    setActiveFavorite(fav); // abre InfoWindow do favorito
+
+    setClickedPos(null);
+    setSelectedPlaceId(null);
+    setSelectedPlace(null);
     setNameInput("");
   }
 
-  function handleSearchResult(place) {
-    const lat = place.geometry.location.lat();
-    const lng = place.geometry.location.lng();
-    setClickedPos({ lat, lng });
-    setNameInput(place.name || "");
-  }
-
   function handleSave() {
+    if (!clickedPos) return;
     if (!nameInput.trim()) return;
+
     addFavorite({
       id: Date.now(),
-      name: nameInput,
+      name: nameInput.trim(),
       lat: clickedPos.lat,
       lng: clickedPos.lng,
-      address: address,
+      address: address || "Endereço desconhecido",
     });
+
     setClickedPos(null);
+    setNameInput("");
   }
 
+  const activeFavoritePosition = useMemo(() => {
+    if (!activeFavorite) return null;
+    return { lat: activeFavorite.lat, lng: activeFavorite.lng };
+  }, [activeFavorite]);
+
   return (
-    <APIProvider apiKey={API_KEY}>
-      <div className="h-full w-full relative">
-        <div className="absolute top-4 left-0 w-full z-[100] flex justify-center pointer-events-none">
-          <div className="pointer-events-auto w-full max-w-md">
-            <Search onPlaceSelect={handleSearchResult} />
-          </div>
-        </div>
+    <div className="h-full w-full relative">
+      {/* Busca flutuante */}
+      <Search
+        onPlaceSelect={handlePlaceSelect}
+        onLocationSelect={handleFavoriteSelect}
+      />
 
-        <GoogleMap
-          defaultCenter={UBERLANDIA_COORDS}
-          defaultZoom={13}
-          mapId="DEMO_MAP_ID"
-          className="h-full w-full"
-          onClick={onMapClick}
-          options={{ disableDefaultUI: false, clickableIcons: true }}
-        >
-          <MapController place={selectedLocation} />
+      {/* Sidebar (desktop) */}
+      <Sidebar
+        favorites={favorites}
+        onSelectFavorite={handleFavoriteSelect}
+        onRemoveFavorite={removeFavorite}
+      />
 
-          {favorites.map((fav) => (
-            <AdvancedMarker
-              key={fav.id}
-              position={{ lat: fav.lat, lng: fav.lng }}
-              title={fav.name}
-            >
-              <Pin
-                background={"#FF3838"}
-                glyphColor={"white"}
-                borderColor={"#FF3838"}
-              />
-            </AdvancedMarker>
-          ))}
+      {/* Mapa */}
+      <MapView
+        onMapClick={onMapClick}
+        defaultCenter={UBERLANDIA_COORDS}
+        defaultZoom={13}
+      >
+        <MapController place={selectedLocation} />
 
-          {clickedPos && (
-            <>
-              <AdvancedMarker position={clickedPos} />
+        {/* Busca detalhes do POI clicado */}
+        <PlaceDetailsController
+          placeId={selectedPlaceId}
+          onPlaceLoaded={(p) => setSelectedPlace(p)}
+          onError={() => setSelectedPlace(null)}
+        />
 
-              <InfoWindow
-                position={clickedPos}
-                onCloseClick={() => setClickedPos(null)}
-              >
-                <div className="p-2 flex flex-col gap-2 min-w-[200px]">
-                  <span className="font-bold text-gray-800">
-                    {nameInput ? "Local Encontrado" : "Novo Local"}
-                  </span>
+        {/* Marcadores de favoritos */}
+        <FavoriteMarkers
+          favorites={favorites}
+          onSelectFavorite={handleFavoriteSelect}
+        />
 
-                  <div className="text-xs text-gray-500 bg-gray-50 p-1 rounded border border-gray-100">
-                    <p>Lat: {clickedPos.lat.toFixed(5)}</p>
-                    <p>Lng: {clickedPos.lng.toFixed(5)}</p>
-                  </div>
+        {/* Marker temporário do clique/busca */}
+        <ClickMarker position={clickedPos} />
 
-                  <div className="text-xs text-gray-600 italic">
-                    {isLoading && <span>🔄 Buscando endereço...</span>}
-                    {isError && (
-                      <span className="text-red-500">
-                        Erro ao buscar endereço
-                      </span>
-                    )}
-                    {!isLoading && !isError && address && (
-                      <span>📍 {address}</span>
-                    )}
-                  </div>
+        {/* Janela de salvar local */}
+        <LocationInfoWindow
+          position={clickedPos}
+          nameInput={nameInput}
+          setNameInput={setNameInput}
+          address={address}
+          isLoading={isLoading}
+          isError={isError}
+          onSave={handleSave}
+          onClose={() => setClickedPos(null)}
+        />
 
-                  <input
-                    autoFocus
-                    className="border border-gray-300 p-1 rounded text-sm outline-none focus:border-blue-500 mt-1"
-                    placeholder="Dê um nome ao local..."
-                    value={nameInput}
-                    onChange={(e) => setNameInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSave()}
-                  />
+        {/* InfoWindow do Favorito */}
+        {activeFavorite && activeFavoritePosition && (
+          <InfoWindow
+            position={activeFavoritePosition}
+            onCloseClick={() => setActiveFavorite(null)}
+          >
+            <div className="pp-card min-w-[220px] space-y-1">
+              <p className="pp-title">{activeFavorite.name}</p>
+              <p className="pp-muted text-sm">{activeFavorite.address}</p>
+              <p className="pp-muted text-xs">
+                {activeFavorite.lat.toFixed(5)}, {activeFavorite.lng.toFixed(5)}
+              </p>
+            </div>
+          </InfoWindow>
+        )}
 
-                  <button
-                    onClick={handleSave}
-                    className="bg-blue-600 text-white py-1 px-2 rounded text-sm hover:bg-blue-700 transition-colors"
-                  >
-                    Salvar Local
-                  </button>
-                </div>
-              </InfoWindow>
-            </>
-          )}
-        </GoogleMap>
-      </div>
-    </APIProvider>
+        {/* InfoWindow do POI (estabelecimento) */}
+        {selectedPlace?.geometry?.location && (
+          <InfoWindow
+            position={{
+              lat: selectedPlace.geometry.location.lat(),
+              lng: selectedPlace.geometry.location.lng(),
+            }}
+            onCloseClick={() => {
+              setSelectedPlace(null);
+              setSelectedPlaceId(null);
+            }}
+          >
+            <div className="pp-card min-w-[240px] space-y-1">
+              <p className="pp-title">{selectedPlace.name}</p>
+              <p className="pp-muted text-sm">
+                {selectedPlace.formatted_address}
+              </p>
+
+              {typeof selectedPlace.rating === "number" && (
+                <p className="text-sm">
+                  ⭐ {selectedPlace.rating} (
+                  {selectedPlace.user_ratings_total ?? 0})
+                </p>
+              )}
+
+              {selectedPlace.formatted_phone_number && (
+                <p className="text-sm">
+                  {selectedPlace.formatted_phone_number}
+                </p>
+              )}
+
+              {selectedPlace.website && (
+                <a
+                  className="text-sm text-blue-600 underline"
+                  href={selectedPlace.website}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Site
+                </a>
+              )}
+            </div>
+          </InfoWindow>
+        )}
+      </MapView>
+    </div>
   );
 }
