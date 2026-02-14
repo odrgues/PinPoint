@@ -64,7 +64,13 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
   });
 
   return (
-    <div className="absolute top-4 left-1/2 -translate-x-1/2 z-sidebar w-full max-w-md px-4 md:px-0 pointer-events-none">
+    <div
+      className="
+  absolute z-sidebar w-full max-w-md px-4 pointer-events-none
+  top-4 left-1/2 -translate-x-1/2
+  max-md:top-auto max-md:bottom-4 max-md:left-1/2 max-md:-translate-x-1/2
+"
+    >
       <SearchBar
         isOpen={isOpen}
         onToggleMenu={toggleMenu}
