@@ -3,33 +3,25 @@ export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
-      // --- 1. TIPOGRAFIA (Fontes Instaladas) ---
       fontFamily: {
-        // 'sans' será a fonte padrão do corpo (Inter)
         sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"],
-        // 'heading' será a fonte para títulos e destaques (Outfit)
         heading: ["Outfit", "sans-serif"],
       },
 
-      // --- 2. IDENTIDADE VISUAL (Cores Terrosas/Elegantes) ---
       colors: {
-        // Cores da Marca
-        primary: "#452829", // Marrom Profundo (Base)
-        secondary: "#777c6d", // Verde Musgo/Oliva (Detalhes)
-        accent: "#957c62", // Ocre/Dourado (Botões/Ações)
-
-        // Textos
+        primary: "#093FB4",
+        secondary: "#FFD8D8",
+        accent: "#696FC7",
         text: {
           primary: "rgb(12, 4, 33)", // Quase preto
           secondary: "#452829", // Marrom escuro
-          muted: "#5d667a", // Cinza azulado (para legendas)
+          muted: "#5d667a",
           inverted: "#ffffff", // Texto sobre fundo escuro
         },
 
-        // Interface (UI)
         ui: {
-          background: "#fdfbf7", // Fundo geral (Creme bem claro)
-          surface: "#ffffff", // Fundo de cards/sidebar
+          background: "#EAEFEF", // Fundo geral (Creme bem claro)
+          surface: "#FFFCFB", // Fundo de cards/sidebar
           border: "#e2e8f0", // Bordas sutis
           error: "#ef4444", // Erro (Vermelho padrão)
           success: "#22c55e", // Sucesso (Verde padrão)
