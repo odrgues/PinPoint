@@ -1,5 +1,3 @@
-import { Sidebar } from "../Sidebar/Sidebar";
-
 import { useMemo, useState } from "react";
 import { InfoWindow } from "@vis.gl/react-google-maps";
 import { useQuery } from "@tanstack/react-query";
@@ -139,13 +137,6 @@ export default function Map() {
       <Search
         onPlaceSelect={handlePlaceSelect}
         onLocationSelect={handleFavoriteSelect}
-      />
-
-      {/* Sidebar (desktop) */}
-      <Sidebar
-        favorites={favorites}
-        onSelectFavorite={handleFavoriteSelect}
-        onRemoveFavorite={removeFavorite}
       />
 
       {/* Mapa */}
