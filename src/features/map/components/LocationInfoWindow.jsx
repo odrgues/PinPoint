@@ -1,3 +1,4 @@
+// src/features/map/components/LocationInfoWindow.jsx
 import { InfoWindow } from "@vis.gl/react-google-maps";
 
 export function LocationInfoWindow({
@@ -18,6 +19,8 @@ export function LocationInfoWindow({
     return null;
   }
 
+  const canSave = Boolean(nameInput?.trim());
+
   return (
     <InfoWindow position={position} onCloseClick={onClose}>
       <div className="pp-card min-w-[240px] space-y-2">
@@ -25,6 +28,7 @@ export function LocationInfoWindow({
           {nameInput ? "Local encontrado" : "Novo local"}
         </p>
 
+        {/* ✅ Requisito: exibir lat/lng */}
         <div className="text-xs pp-muted">
           <p>Lat: {position.lat.toFixed(5)}</p>
           <p>Lng: {position.lng.toFixed(5)}</p>
@@ -44,10 +48,18 @@ export function LocationInfoWindow({
           placeholder="Dê um nome ao local..."
           value={nameInput}
           onChange={(e) => setNameInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && onSave()}
+          onKeyDown={(e) => {
+            if (e.key !== "Enter") return;
+            e.preventDefault();
+            if (canSave) onSave();
+          }}
         />
 
-        <button onClick={onSave} className="pp-btn w-full">
+        <button
+          onClick={onSave}
+          className={`pp-btn w-full ${!canSave ? "opacity-50 cursor-not-allowed" : ""}`}
+          disabled={!canSave}
+        >
           Salvar local
         </button>
       </div>
