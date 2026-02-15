@@ -147,7 +147,7 @@ src/
 └─ main.jsx
 
 
-## **📦 Separação de Responsabilidades**
+### **📦 Separação de Responsabilidades**
 
 O projeto foi estruturado de forma a manter uma **separação clara de responsabilidades**, facilitando a leitura, manutenção e evolução do código.
 
@@ -162,7 +162,7 @@ Essa separação evita acoplamento excessivo, reduz duplicação de código e to
 
 ---
 
-## 🔄 Fluxo da Aplicação
+### 🔄 Fluxo da Aplicação
 
 O funcionamento da aplicação segue um fluxo simples e bem definido:
 
@@ -178,7 +178,7 @@ Esse fluxo foi pensado para ser **intuitivo**, **direto** e **sem etapas desnece
 
 ---
 
-## 🧠 Gerenciamento de Estado
+### 🧠 Gerenciamento de Estado
 
 O gerenciamento de estado foi dividido conforme a responsabilidade de cada dado:
 
@@ -201,7 +201,7 @@ Sempre que possível, estados são derivados de outras fontes (ex: React Query),
 
 ---
 
-## 🌐 Integração com APIs
+### 🌐 Integração com APIs
 
 A aplicação integra diferentes serviços do Google Maps:
 
@@ -222,7 +222,7 @@ As requisições assíncronas são gerenciadas com **React Query**, que cuida de
 
 ---
 
-## 📱 Responsividade
+### 📱 Responsividade
 
 A interface foi projetada com foco em **usabilidade em diferentes tamanhos de tela**, utilizando utilitários responsivos do Tailwind CSS.
 
@@ -240,7 +240,7 @@ Esse comportamento garante uma experiência consistente e confortável em qualqu
 
 ---
 
-## 🧼 Boas Práticas Aplicadas
+### 🧼 Boas Práticas Aplicadas
 
 Durante o desenvolvimento do projeto, foram aplicadas diversas boas práticas de Front-End, incluindo:
 
@@ -256,7 +256,7 @@ Durante o desenvolvimento do projeto, foram aplicadas diversas boas práticas de
 
 ---
 
-## ▶️ Como Rodar o Projeto Localmente
+### ▶️ Como Rodar o Projeto Localmente
 
 ### Pré-requisitos
 
