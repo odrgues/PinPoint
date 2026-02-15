@@ -8,7 +8,7 @@ O projeto foi desenvolvido com foco em **boas práticas de Front-End**, **arquit
 
 ## 🎯 Objetivo do Projeto
 
-O PinPoint foi criado com o objetivo de demonstrar, na prática, conhecimentos essenciais para um desenvolvedor front-end moderno, incluindo:
+O PinPoint foi criado com o objetivo de exercitar, na prática, a construção de uma aplicação front-end completa, abordando:
 
 - Estruturação de aplicações React de forma profissional
 - Organização de código baseada em funcionalidades (feature-based architecture)
@@ -125,6 +125,7 @@ src/
 │     │  ├─ MapView.jsx
 │     │  ├─ MapController.jsx
 │     │  ├─ FavoriteMarkers.jsx
+│     │  ├─ FavoriteInfoWindow.jsx
 │     │  ├─ ClickMarker.jsx
 │     │  ├─ LocationInfoWindow.jsx
 │     │  └─ PlaceInfoWindow.jsx
@@ -133,10 +134,11 @@ src/
 │     │  └─ usePlaceDetails.js
 │     ├─ utils/
 │     │  └─ normalizeLatLng.js
-│     └─ index.js
+│     
 │
 ├─ services/
-│  └─ googleMapsService.js
+│  ├─ google/
+│     └─ googleMapsService.js
 │
 ├─ store/
 │  └─ useStore.js
@@ -145,7 +147,7 @@ src/
 └─ main.jsx
 
 
-## 📦 Separação de Responsabilidades
+## **📦 Separação de Responsabilidades**
 
 O projeto foi estruturado de forma a manter uma **separação clara de responsabilidades**, facilitando a leitura, manutenção e evolução do código.
 
