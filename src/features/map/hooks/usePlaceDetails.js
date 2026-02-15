@@ -9,9 +9,6 @@ export function usePlaceDetails(placeId) {
     queryKey: ["placeDetails", placeId],
     enabled: Boolean(map && placeId),
     staleTime: 1000 * 60 * 10,
-    queryFn: async () => {
-      if (!map || !placeId) return null;
-      return getPlaceDetails({ map, placeId });
-    },
+    queryFn: () => getPlaceDetails({ map, placeId }),
   });
 }

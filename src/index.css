@@ -42,5 +42,17 @@ body,
   .pp-input {
     @apply border border-ui-border bg-ui-surface rounded-lg px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-accent/40;
   }
+
+ .gm-ui-hover-effect {
+  transform: scale(0.7);
+  opacity: 0.6;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.gm-ui-hover-effect:hover {
+  opacity: 1;
+  transform: scale(0.8);
+}
+
 }
 

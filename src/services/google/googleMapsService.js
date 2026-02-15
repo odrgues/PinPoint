@@ -18,6 +18,7 @@ export function getPlaceDetails({ map, placeId }) {
     if (!map) return reject(new Error("Map instance não disponível"));
 
     const service = new window.google.maps.places.PlacesService(map);
+
     service.getDetails(
       {
         placeId,

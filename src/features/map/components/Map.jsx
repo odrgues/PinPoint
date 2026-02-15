@@ -27,6 +27,7 @@ export default function Map() {
   const [activeFavorite, setActiveFavorite] = useState(null);
 
   const [selectedPlaceId, setSelectedPlaceId] = useState(null);
+  const [selectedPlacePos, setSelectedPlacePos] = useState(null);
 
   const { address, isLoading, isError } = useReverseGeocode(clickedPos);
 
@@ -35,6 +36,7 @@ export default function Map() {
 
   function resetOverlays() {
     setSelectedPlaceId(null);
+    setSelectedPlacePos(null);
     setActiveFavorite(null);
   }
 
@@ -42,6 +44,8 @@ export default function Map() {
     const placeId = ev.detail.placeId?.placeId || ev.detail.placeId;
     if (placeId) {
       setSelectedPlaceId(placeId);
+      const pos = normalizeLatLng(ev.detail.latLng);
+      setSelectedPlacePos(pos);
 
       setClickedPos(null);
       setNameInput("");
@@ -149,7 +153,13 @@ export default function Map() {
 
         <PlaceInfoWindow
           place={selectedPlace}
-          onClose={() => setSelectedPlaceId(null)}
+          position={selectedPlacePos}
+          isLoading={placeDetailsQuery.isLoading}
+          isError={placeDetailsQuery.isError}
+          onClose={() => {
+            setSelectedPlaceId(null);
+            setSelectedPlacePos(null);
+          }}
         />
       </MapView>
     </div>
