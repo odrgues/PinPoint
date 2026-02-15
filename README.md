@@ -38,22 +38,22 @@ O PinPoint foi criado com o objetivo de demonstrar, na prática, conhecimentos e
 
 ### Desktop
 
-###Tela incial
+### Tela incial
 ![Mapa inicial](public/readme/desktop/map-home.png)
 
-###Lista de locais salvos
+### Lista de locais salvos
 ![Lista de locais salvos](public/readme/desktop/saved-list.png)
 
-##Busca de locais com Google Places Autocomplete
+## Busca de locais com Google Places Autocomplete
 ![Busca de locais com Google Places Autocomplete](public/readme/desktop/autocomplete-search.png)
 
-###Salvamento de locais
+### Salvamento de locais
 ![Salvamento de locais](public/readme/desktop/save-location.png)
 
-###Marcador de local salvo exibido no mapa
+### Marcador de local salvo exibido no mapa
 ![Marcador de local salvo exibido no mapa](public/readme/desktop/saved-marker.png)
 
-###Janela de informações de um estabelecimento no mapa
+### Janela de informações de um estabelecimento no mapa
 ![Janela de informações de um estabelecimento no mapa](public/readme/desktop/place-info-window.png)
 
 
