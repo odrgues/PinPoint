@@ -58,7 +58,7 @@ O PinPoint foi criado com o objetivo de exercitar, na prática, a construção d
 
 ### Tratamendo de erros
 ![Tela de tratamento de erro no carregamento](public/readme/desktop/loading-error.png)
-![Tela de tratamento de erro no carregamento](public/readme/desktop/loading-error2.png)
+![Tela de tratamento de erro no carregamento](public/readme/desktop/loading-error-2.png)
 
 
 
