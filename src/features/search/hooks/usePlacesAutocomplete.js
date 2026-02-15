@@ -1,11 +1,9 @@
-// src/features/search/hooks/usePlacesAutocomplete.js
 import { useEffect, useRef } from "react";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 
 export function usePlacesAutocomplete({ inputRef, onPlaceSelect }) {
   const placesLib = useMapsLibrary("places");
 
-  // Mantém sempre a callback mais recente sem recriar o Autocomplete
   const onPlaceSelectRef = useRef(onPlaceSelect);
   useEffect(() => {
     onPlaceSelectRef.current = onPlaceSelect;

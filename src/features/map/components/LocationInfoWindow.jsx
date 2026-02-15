@@ -1,4 +1,3 @@
-// src/features/map/components/LocationInfoWindow.jsx
 import { InfoWindow } from "@vis.gl/react-google-maps";
 
 export function LocationInfoWindow({
@@ -28,7 +27,6 @@ export function LocationInfoWindow({
           {nameInput ? "Local encontrado" : "Novo local"}
         </p>
 
-        {/* ✅ Requisito: exibir lat/lng */}
         <div className="text-xs pp-muted">
           <p>Lat: {position.lat.toFixed(5)}</p>
           <p>Lng: {position.lng.toFixed(5)}</p>

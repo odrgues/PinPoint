@@ -1,4 +1,3 @@
-// src/features/map/components/FavoriteMarkers.jsx
 import { AdvancedMarker, Pin } from "@vis.gl/react-google-maps";
 
 export function FavoriteMarkers({ favorites = [], onSelectFavorite }) {

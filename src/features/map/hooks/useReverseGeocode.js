@@ -1,4 +1,3 @@
-// src/features/map/hooks/useReverseGeocode.js
 import { useQuery } from "@tanstack/react-query";
 import { reverseGeocode } from "../../../services/google/googleMapsService";
 

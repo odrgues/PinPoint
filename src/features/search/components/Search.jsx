@@ -1,12 +1,9 @@
 // src/features/search/components/Search.jsx
 import { useCallback, useRef, useState } from "react";
 import { useStore } from "../../../store/useStore";
-
 import { SearchBar } from "./SearchBar";
 import { FavoritesMenu } from "./FavoritesMenu";
-
 import { usePlacesAutocomplete } from "../hooks/usePlacesAutocomplete";
-import { useGeocodeSearch } from "../hooks/useGeocodeSearch";
 
 export function Search({ onPlaceSelect, onLocationSelect }) {
   const { favorites, removeFavorite } = useStore();
@@ -19,28 +16,12 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
   const closeMenu = useCallback(() => setIsOpen(false), []);
   const toggleMenu = useCallback(() => setIsOpen((v) => !v), []);
 
-  // Mantém a referência estável e evita re-renderizações/desinscrição de listeners
   const handlePlaceSelect = useCallback(
     (place) => {
+      closeMenu();
       onPlaceSelect?.(place);
     },
-    [onPlaceSelect],
-  );
-
-  const handleAutocompleteSelect = useCallback(
-    (place) => {
-      closeMenu();
-      handlePlaceSelect(place);
-    },
-    [closeMenu, handlePlaceSelect],
-  );
-
-  const handleGeocodeSelect = useCallback(
-    (placeLike) => {
-      closeMenu();
-      handlePlaceSelect(placeLike);
-    },
-    [closeMenu, handlePlaceSelect],
+    [onPlaceSelect, closeMenu],
   );
 
   const handleFavoriteSelect = useCallback(
@@ -51,48 +32,29 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
     [onLocationSelect, closeMenu],
   );
 
-  // Hook: autocomplete do Google Places
   usePlacesAutocomplete({
     inputRef,
-    onPlaceSelect: handleAutocompleteSelect,
-  });
-
-  // Hook: busca por texto com React Query (geocoding)
-  const { handleSubmit, isPending, isError, error } = useGeocodeSearch({
-    text,
-    onPlaceSelect: handleGeocodeSelect,
+    onPlaceSelect: handlePlaceSelect,
   });
 
   return (
     <div
       className="
-  absolute z-sidebar w-full max-w-md px-4 pointer-events-none
-  top-4 left-1/2 -translate-x-1/2
-  max-md:top-auto max-md:bottom-4 max-md:left-1/2 max-md:-translate-x-1/2
-"
+    absolute z-sidebar w-full max-w-md px-4 pointer-events-none
+    left-1/2 -translate-x-1/2
+    bottom-4 md:bottom-auto
+    md:top-4
+  "
     >
+      {" "}
       <SearchBar
         isOpen={isOpen}
         onToggleMenu={toggleMenu}
         text={text}
         onTextChange={setText}
         inputRef={inputRef}
-        onSubmit={handleSubmit}
+        /* 🚫 não tem mais onSubmit */
       />
-
-      <div className="pointer-events-none mt-2" aria-live="polite">
-        {isPending && (
-          <div className="pointer-events-auto inline-block pp-card text-sm">
-            🔄 Buscando...
-          </div>
-        )}
-        {isError && (
-          <div className="pointer-events-auto inline-block pp-card text-sm text-ui-error">
-            {error?.message || "Erro na busca"}
-          </div>
-        )}
-      </div>
-
       <FavoritesMenu
         open={isOpen}
         favorites={favorites}

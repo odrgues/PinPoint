@@ -4,12 +4,10 @@ import { persist, createJSONStorage } from "zustand/middleware";
 export const useStore = create(
   persist(
     (set) => ({
-      // Estado Inicial
-      favorites: [], // Lista de locais salvos [cite: 15, 41]
-      selectedPlace: null, // Local clicado no mapa para detalhes [cite: 13, 35]
-      tempLocation: null, // Local clicado mas ainda não salvo [cite: 38]
+      favorites: [],
+      selectedPlace: null,
+      tempLocation: null,
 
-      // Ações
       addFavorite: (favorite) =>
         set((state) => ({
           favorites: [
@@ -29,7 +27,7 @@ export const useStore = create(
       setTempLocation: (location) => set({ tempLocation: location }),
     }),
     {
-      name: "pinpoint-storage", // Nome da chave no localStorage
+      name: "pinpoint-storage",
       storage: createJSONStorage(() => localStorage),
     },
   ),

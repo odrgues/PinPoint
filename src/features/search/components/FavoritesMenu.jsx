@@ -1,4 +1,3 @@
-// src/features/search/components/FavoritesMenu.jsx
 import { MapPin, Trash2 } from "lucide-react";
 
 export function FavoritesMenu({

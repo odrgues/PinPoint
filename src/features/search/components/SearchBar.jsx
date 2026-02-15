@@ -1,4 +1,3 @@
-// src/features/search/components/SearchBar.jsx
 import { Menu, X, Search as SearchIcon } from "lucide-react";
 
 export function SearchBar({
@@ -7,29 +6,17 @@ export function SearchBar({
   text,
   onTextChange,
   inputRef,
-  onSubmit,
 }) {
   return (
-    <form
-      onSubmit={onSubmit}
-      className="pointer-events-auto bg-ui-surface shadow-floating rounded-pill flex items-center p-1 border border-ui-border focus-within:ring-2 focus-within:ring-primary/20"
-      role="search"
-    >
+    <div className="pointer-events-auto bg-ui-surface shadow-floating rounded-pill flex items-center p-1 border border-ui-border focus-within:ring-2 focus-within:ring-primary/20">
       <button
         type="button"
         onClick={onToggleMenu}
-        className={`p-2 sm:p-3 rounded-full transition-colors ${
+        className={`p-3 rounded-full transition-colors ${
           isOpen
             ? "bg-primary text-ui-surface"
             : "text-primary hover:bg-ui-background"
         }`}
-        aria-label={
-          isOpen
-            ? "Fechar menu de locais salvos"
-            : "Abrir menu de locais salvos"
-        }
-        aria-expanded={isOpen}
-        title={isOpen ? "Fechar Menu" : "Abrir Menu"}
       >
         {isOpen ? <X size={20} /> : <Menu size={20} />}
       </button>
@@ -49,14 +36,7 @@ export function SearchBar({
 
       <div className="h-6 w-px bg-ui-border mx-1" />
 
-      <button
-        type="submit"
-        className="p-2 sm:p-3 text-accent hover:text-primary hover:bg-ui-background rounded-full transition-colors"
-        aria-label="Pesquisar"
-        title="Pesquisar"
-      >
-        <SearchIcon size={20} />
-      </button>
-    </form>
+      <SearchIcon size={20} className="mx-3 text-text-muted" />
+    </div>
   );
 }

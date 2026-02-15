@@ -1,4 +1,3 @@
-// src/features/map/components/FavoriteInfoWindow.jsx
 import { InfoWindow } from "@vis.gl/react-google-maps";
 
 export function FavoriteInfoWindow({ favorite, onClose }) {
@@ -8,8 +7,8 @@ export function FavoriteInfoWindow({ favorite, onClose }) {
 
   return (
     <InfoWindow position={position} onCloseClick={onClose}>
-      <div className="pp-card min-w-[220px] space-y-1">
-        <p className="pp-title">{favorite.name}</p>
+      <div className="pp-card min-w-[220px] space-y-1 ">
+        <p className="pp-title text-blue-600">{favorite.name}</p>
         <p className="pp-muted text-sm">{favorite.address}</p>
         <p className="pp-muted text-xs">
           {favorite.lat.toFixed(5)}, {favorite.lng.toFixed(5)}
