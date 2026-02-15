@@ -1,4 +1,3 @@
-// src/features/map/components/MapView.jsx
 import { Map as GoogleMap } from "@vis.gl/react-google-maps";
 
 const MAP_OPTIONS = {

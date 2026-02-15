@@ -1,4 +1,3 @@
-// src/features/map/components/MapController.jsx
 import { useEffect, useRef } from "react";
 import { useMap } from "@vis.gl/react-google-maps";
 

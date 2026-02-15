@@ -1,4 +1,3 @@
-// src/features/map/hooks/usePlaceDetails.js
 import { useMap } from "@vis.gl/react-google-maps";
 import { useQuery } from "@tanstack/react-query";
 import { getPlaceDetails } from "../../../services/google/googleMapsService";

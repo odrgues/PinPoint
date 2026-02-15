@@ -1,7 +1,3 @@
-// src/features/map/utils/normalizeLatLng.js
-
-// Garante {lat:number,lng:number} independentemente do tipo
-// (Google LatLng com lat()/lng() ou objeto normal com lat/lng)
 export function normalizeLatLng(latLng) {
   if (!latLng) return null;
 

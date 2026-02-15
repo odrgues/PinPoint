@@ -1,4 +1,3 @@
-// src/features/map/components/ClickMarker.jsx
 import { AdvancedMarker } from "@vis.gl/react-google-maps";
 
 export function ClickMarker({ position }) {

@@ -1,4 +1,3 @@
-// src/features/map/components/PlaceInfoWindow.jsx
 import { InfoWindow } from "@vis.gl/react-google-maps";
 
 export function PlaceInfoWindow({ place, onClose }) {
@@ -11,26 +10,59 @@ export function PlaceInfoWindow({ place, onClose }) {
 
   return (
     <InfoWindow position={position} onCloseClick={onClose}>
-      <div className="pp-card min-w-[240px] space-y-1">
-        <p className="pp-title">{place.name}</p>
-        <p className="pp-muted text-sm">{place.formatted_address}</p>
+      <div
+        className="
+        min-w-[260px] max-w-[280px]
+        space-y-2
+        rounded-xl
+        bg-secondary
+        p-3
+        shadow-lg
+      "
+      >
+        <p className="text-sm font-semibold text-blue-600 leading-tight ">
+          {place.name}
+        </p>
+
+        <p className="text-xs text-slate-500 leading-snug">
+          {place.formatted_address}
+        </p>
 
         {typeof place.rating === "number" && (
-          <p className="text-sm">
-            ⭐ {place.rating} ({place.user_ratings_total ?? 0})
+          <p className="text-xs text-slate-600 flex items-center gap-1">
+            <span>⭐</span>
+            <span>
+              {place.rating} ({place.user_ratings_total ?? 0})
+            </span>
           </p>
         )}
 
         {place.formatted_phone_number && (
-          <p className="text-sm">{place.formatted_phone_number}</p>
+          <p className="text-xs text-slate-600">
+            {place.formatted_phone_number}
+          </p>
         )}
 
         {place.website && (
           <a
-            className="text-sm text-blue-600 underline"
             href={place.website}
             target="_blank"
             rel="noreferrer"
+            className="
+            
+              inline-flex
+              items-center
+              justify-center
+              rounded-full
+              bg-accent
+              px-3
+              py-1.5
+              text-xs
+              font-medium
+              text-white
+              transition
+            
+            "
           >
             Site
           </a>
