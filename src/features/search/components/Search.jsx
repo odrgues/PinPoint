@@ -38,9 +38,9 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
 
   const wrapperClassName = `
   absolute z-sidebar w-full max-w-md px-4 pointer-events-none
-  left-1/2 -translate-x-1/2 pb-2
-${isFocused ? "top-4 bottom-auto" : "safe-bottom top-auto"}
-
+  left-1/2 -translate-x-1/2 pb-6
+  ${isFocused ? "top-4 bottom-auto" : "pp-safe-bottom top-auto"}
+  md:top-4 md:bottom-auto md:left-1/2 md:-translate-x-1/2
 `;
 
   return (
