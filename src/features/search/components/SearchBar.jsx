@@ -6,6 +6,8 @@ export function SearchBar({
   text,
   onTextChange,
   inputRef,
+  onFocus,
+  onBlur,
 }) {
   return (
     <div
@@ -35,6 +37,8 @@ export function SearchBar({
         ref={inputRef}
         value={text}
         onChange={(e) => onTextChange(e.target.value)}
+        onFocus={onFocus}
+        onBlur={onBlur}
         type="text"
         name="search"
         inputMode="search"

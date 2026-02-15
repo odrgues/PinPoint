@@ -9,7 +9,7 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
 
   const [isOpen, setIsOpen] = useState(false);
   const [text, setText] = useState("");
-
+  const [isFocused, setIsFocused] = useState(false);
   const inputRef = useRef(null);
 
   const closeMenu = useCallback(() => setIsOpen(false), []);
@@ -36,15 +36,15 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
     onPlaceSelect: handlePlaceSelect,
   });
 
-  return (
-    <div
-      className="
+  const wrapperClassName = `
     absolute z-sidebar w-full max-w-md px-4 pointer-events-none
     left-1/2 -translate-x-1/2
-    bottom-4 md:bottom-auto
-    md:top-4
-  "
-    >
+    ${isFocused ? "top-4 bottom-auto" : "bottom-4 top-auto"}
+    md:top-4 md:bottom-auto
+  `;
+
+  return (
+    <div className={wrapperClassName}>
       {" "}
       <SearchBar
         isOpen={isOpen}
@@ -52,6 +52,8 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
         text={text}
         onTextChange={setText}
         inputRef={inputRef}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
       />
       <FavoritesMenu
         open={isOpen}
