@@ -42,7 +42,13 @@ export function LocationInfoWindow({
 
         <input
           autoFocus
-          className="pp-input w-full"
+          className="
+    pp-input
+    w-full
+    focus:outline-none
+    focus:ring-0
+
+  "
           placeholder="Dê um nome ao local..."
           value={nameInput}
           onChange={(e) => setNameInput(e.target.value)}
@@ -55,8 +61,12 @@ export function LocationInfoWindow({
 
         <button
           onClick={onSave}
-          className={`pp-btn w-full ${!canSave ? "opacity-50 cursor-not-allowed" : ""}`}
           disabled={!canSave}
+          className={`pp-btn w-full bg-ui-accent text-ui-surface 
+            hover:bg-ui-accent hover:text-ui-surface hover:shadow-none active:scale-100
+
+    ${!canSave ? "opacity-100 cursor-not-allowed" : ""}
+  `}
         >
           Salvar local
         </button>
