@@ -53,6 +53,7 @@ export function PlaceInfoWindow({ place, onClose }) {
               inline-flex
               items-center
               justify-center
+              align-center
               rounded-full
               bg-accent
               px-3
@@ -60,7 +61,7 @@ export function PlaceInfoWindow({ place, onClose }) {
               text-xs
               font-medium
               text-white
-              transition
+           
             
             "
           >

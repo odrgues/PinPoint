@@ -1,4 +1,3 @@
-// src/features/search/components/Search.jsx
 import { useCallback, useRef, useState } from "react";
 import { useStore } from "../../../store/useStore";
 import { SearchBar } from "./SearchBar";
@@ -53,7 +52,6 @@ export function Search({ onPlaceSelect, onLocationSelect }) {
         text={text}
         onTextChange={setText}
         inputRef={inputRef}
-        /* 🚫 não tem mais onSubmit */
       />
       <FavoritesMenu
         open={isOpen}

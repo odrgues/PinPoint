@@ -23,7 +23,7 @@ export default {
           background: "#EAEFEF",
           surface: "#FFFCFB",
           border: "#e2e8f0",
-          error: "#ef4444",
+          error: "#ED3500",
           success: "#22c55e",
         },
       },

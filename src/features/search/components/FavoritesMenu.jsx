@@ -27,7 +27,7 @@ export function FavoritesMenu({
       <div className="max-h-[60vh] overflow-y-auto p-2 space-y-1">
         {favorites.length === 0 ? (
           <div className="text-center py-6 text-text-muted">
-            <MapPin className="mx-auto mb-2 opacity-50" size={24} />
+            <MapPin className="mx-auto mb-2 opacity-50 " size={24} />
             <p className="text-sm">Sua lista está vazia.</p>
           </div>
         ) : (
