@@ -56,6 +56,11 @@ O PinPoint foi criado com o objetivo de exercitar, na prática, a construção d
 ### Janela de informações de um estabelecimento no mapa
 ![Janela de informações de um estabelecimento no mapa](public/readme/desktop/place-info-window.png)
 
+### Tratamendo de erros
+![Tela de tratamento de erro no carregamento](public/readme/desktop/loading-error.png)
+![Tela de tratamento de erro no carregamento](public/readme/desktop/loading-error2.png)
+
+
 
 ### Mobile
 
@@ -76,6 +81,10 @@ O PinPoint foi criado com o objetivo de exercitar, na prática, a construção d
 
 ### Janela de informações de um estabelecimento no mapa
 ![Janela de informações de um estabelecimento no mapa](public/readme/mobile/place-info-window.png)
+
+### Tratamendo de erros
+![Tela de tratamento de erro no carregamento](public/readme/mobile/loading-error.png)
+![Tela de tratamento de erro no carregamento](public/readme/mobile/loading-error2.png)
 
 
 ---
@@ -172,7 +181,7 @@ O funcionamento da aplicação segue um fluxo simples e bem definido:
 4. As coordenadas (latitude e longitude) são exibidas
 5. O endereço é obtido via reverse geocoding
 6. O usuário pode salvar o local como favorito
-7. Os favoritos ficam disponíveis para seleção posterior
+7. Os locais salvos ficam disponíveis para seleção posterior
 
 Esse fluxo foi pensado para ser **intuitivo**, **direto** e **sem etapas desnecessárias**.
 

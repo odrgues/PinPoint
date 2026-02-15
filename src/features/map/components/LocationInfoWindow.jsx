@@ -43,6 +43,7 @@ export function LocationInfoWindow({
         <input
           autoFocus
           className="
+          text-blue-600
     pp-input
     w-full
     focus:outline-none
@@ -62,8 +63,8 @@ export function LocationInfoWindow({
         <button
           onClick={onSave}
           disabled={!canSave}
-          className={`pp-btn w-full bg-ui-accent text-ui-surface 
-            hover:bg-ui-accent hover:text-ui-surface hover:shadow-none active:scale-100
+          className={`pp-btn w-full bg-blue-600 text-ui-surface 
+            hover:bg-blue-600 hover:text-ui-surface hover:shadow-none active:scale-100
 
     ${!canSave ? "opacity-100 cursor-not-allowed" : ""}
   `}

@@ -1,72 +1,76 @@
 import { InfoWindow } from "@vis.gl/react-google-maps";
 
-export function PlaceInfoWindow({ place, onClose }) {
-  if (!place?.geometry?.location) return null;
+export function PlaceInfoWindow({
+  place,
+  position,
+  isLoading,
+  isError,
+  onClose,
+}) {
+  const resolvedPosition = place?.geometry?.location
+    ? {
+        lat: place.geometry.location.lat(),
+        lng: place.geometry.location.lng(),
+      }
+    : position;
 
-  const position = {
-    lat: place.geometry.location.lat(),
-    lng: place.geometry.location.lng(),
-  };
+  if (!resolvedPosition) return null;
 
   return (
-    <InfoWindow position={position} onCloseClick={onClose}>
-      <div
-        className="
-        min-w-[260px] max-w-[280px]
-        space-y-2
-        rounded-xl
-        bg-secondary
-        p-3
-        shadow-lg
-      "
-      >
-        <p className="text-sm font-semibold text-blue-600 leading-tight ">
-          {place.name}
-        </p>
-
-        <p className="text-xs text-slate-500 leading-snug">
-          {place.formatted_address}
-        </p>
-
-        {typeof place.rating === "number" && (
-          <p className="text-xs text-slate-600 flex items-center gap-1">
-            <span>⭐</span>
-            <span>
-              {place.rating} ({place.user_ratings_total ?? 0})
-            </span>
-          </p>
+    <InfoWindow position={resolvedPosition} onCloseClick={onClose}>
+      <div className="pp-card min-w-[240px] space-y-2">
+        {isLoading && (
+          <>
+            <p className="pp-title">Carregando detalhes…</p>
+            <p className="pp-muted text-sm">Aguarde um momento.</p>
+          </>
         )}
 
-        {place.formatted_phone_number && (
-          <p className="text-xs text-slate-600">
-            {place.formatted_phone_number}
-          </p>
+        {!isLoading && isError && (
+          <>
+            <p className="pp-title">Não foi possível carregar</p>
+            <p className="pp-muted text-sm">
+              Tente novamente clicando no local mais uma vez.
+            </p>
+          </>
         )}
 
-        {place.website && (
-          <a
-            href={place.website}
-            target="_blank"
-            rel="noreferrer"
-            className="
-            
-              inline-flex
-              items-center
-              justify-center
-              align-center
-              rounded-full
-              bg-accent
-              px-3
-              py-1.5
-              text-xs
-              font-medium
-              text-white
-           
-            
-            "
-          >
-            Site
-          </a>
+        {!isLoading && !isError && place && (
+          <>
+            <p className="pp-title text-blue-600">{place.name}</p>
+            <p className="pp-muted text-sm">{place.formatted_address}</p>
+
+            {typeof place.rating === "number" && (
+              <p className="text-sm">
+                ⭐ {place.rating} ({place.user_ratings_total ?? 0})
+              </p>
+            )}
+
+            {place.formatted_phone_number && (
+              <p className="text-sm">{place.formatted_phone_number}</p>
+            )}
+
+            {place.website && (
+              <div className="flex justify-center mt-2">
+                <a
+                  className="
+                    inline-flex items-center justify-center
+                    px-3 py-1.5
+                    text-sm font-medium
+                    rounded-full
+                    bg-blue-600 text-white
+                    
+                    transition-colors
+                  "
+                  href={place.website}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Site
+                </a>
+              </div>
+            )}
+          </>
         )}
       </div>
     </InfoWindow>
