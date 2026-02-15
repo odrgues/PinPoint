@@ -290,7 +290,7 @@ VITE_GOOGLE_MAPS_MAP_ID=YOUR_MAP_ID
 
 # Inicie o projeto
 npm run dev
-
+```
 
 ## 🌐 Acesso em Produção (Deploy)
 
