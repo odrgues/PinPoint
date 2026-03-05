@@ -300,8 +300,4 @@ A aplicação também está disponível online em ambiente de produção:
 
 ---
 
-## ⚠️ Observação Importante
 
-Para facilitar a avaliação técnica do desafio, as variáveis de ambiente utilizadas para acesso às APIs do Google Maps foram disponibilizadas no arquivo `.env` durante o envio do projeto para a Ivare, permitindo que o projeto seja executado localmente sem configuração adicional.
-
-Em um ambiente real de produção, essas chaves devem ser mantidas protegidas e configuradas exclusivamente no ambiente de deploy, com as devidas restrições de domínio e permissões de uso.
